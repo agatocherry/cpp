@@ -1,4 +1,4 @@
-# Variables
+# Variables  
 
 NAME	=	megaphone
 CC		=	c++
@@ -6,7 +6,7 @@ CFLAGS	=	-Werror -Wall -Wextra -g -c
 SRCS	=	megaphone.cpp
 OBJ		=	$(SRCS:.c=.o)
 
-# Rules
+# Rules  
 
 all: $(NAME)
 
