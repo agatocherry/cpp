@@ -2,100 +2,54 @@
 #include <fstream>
 #include <string>
 
-int	error()
-{
-	std::cout << "Please write one valid file. Thanks." << std::endl;
-	return (0);
-}
 
-char *newFile(std::string fileName)
+int	error_message(std::string str)
 {
-	int	size = 0;
-	while (fileName[size])
-		size++;
-	char *newFileName = new char[size + 9];
-	std::string dot(".replace");
-	int i = 0;
-	while (fileName[i])
-	{
-		newFileName[i] = fileName[i];
-		i++;
-	}
-	int j = 0;
-	while (dot[j])
-	{
-		newFileName[i] = dot[j];
-		i++;
-		j++;
-	}
-	return (newFileName);
-}
-
-int size(std::string str)
-{
-	int j = 0;
-	while (str[j])
-	{
-		j++;
-	}
-	// std::cout << j << std::endl;
-	return (j);
-}
-
-int	size_replace(std::string str, int i, std::string replace)
-{
-	int size = 0;
-
-	while(str[i + size] == replace[size] && str[i + size] && replace[size])
-	{
-		size++;
-	}
-	return (size);
-}
-
-int	replace(std::string s1, std::string s2, std::string fileName, char *newFileName)
-{
-	std::ifstream in(fileName);
-	if(!in)
-		return (1);
-	std::string const out(newFileName);
-	std::ofstream flow(out.c_str());
-	std::string line;
-	int s1Size = size(s1);
-	while(getline(in, line) && flow)
-	{
-		int i = 0;
-		int j = 0;
-		while (line[i])
-		{
-			//std::cout << line[i];
-			//std::cout << size_replace(line, i, s1);
-			if (size_replace(line, i, s1) == size(s1))
-			{
-				flow << s2;
-				i += (size_replace(line, i, s1) - 1);
-			}
-			else
-				flow << line[i];
-			i++;
-		}
-		flow << std::endl;
-		//std::cout << std::endl;
-	}
-	return (0);
+	std::cout << "Error\n" << str << std::endl;
+	return (1);
 }
 
 int	main(int argc, char **argv)
 {
-	std::string s1 = "C++";
-	std::string s2 = "B--";
-	if (argc != 2)
-	 	return (error());
-	std::string fileName(argv[1]);
-	char *newFileName = newFile(fileName);
-	//std::cout << fileName << '\n' << newFileName << std::endl;
-	if (replace(s1, s2, fileName, newFileName) == 1)
-		return (error());
-	delete(newFileName);
+	std::ifstream	ifs(argv[1]);
+	std::string		replace_file(argv[1]);
+	replace_file += ".replace";
+	std::ofstream	ofs(replace_file.c_str());
+	std::string		file;
+	if (argc != 4)
+		return (error_message("Usage: ./replace [FILE] [s1] [s2]"));
+	if (!ifs)
+		return (error_message("The file does not exist or do not have permission"));
+
+	std::string		str1(argv[2]);
+	std::string		str2(argv[3]);
+
+	if (str1.empty())
+		return (error_message("String empty"));
+
+	std::string		line;
+
+	while (getline(ifs, line))
+	{
+		file += line;
+		file += "\n";
+	}
+
+	ifs.close();
+
+	const unsigned int	size_str1 = str1.length();
+	const unsigned int	size_str2 = str2.length();
+
+	for (unsigned int i = 0; i < (unsigned int)file.length(); i++)
+	{
+		if (!file.compare(i, size_str1, str1))
+		{
+			file.erase(i, size_str1);
+			file.insert(i, str2);
+			i += size_str2 - 1;
+		}
+	}
+	ofs << file;
+	ofs.close();
 	return (0);
 }

@@ -5,17 +5,15 @@
 #include <string>
 
 class Zombie {
-
 	public :
-
-	void announce( void );
-	void nameZombie(std::string name);
-	~Zombie( void );
+		Zombie();
+		Zombie(std::string name);
+		void announce( void );
+		void nameZombie(std::string name);
+		~Zombie( void );
 
 	private :
-
-	std::string _name;
-
+		std::string _name;
 };
 
 Zombie* zombieHorde( int N, std::string name );

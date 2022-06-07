@@ -1,9 +1,9 @@
 # Variables
 
-NAME	=	Karen
+NAME	=	Harl
 CC		=	c++
 CFLAGS	=	-Werror -Wall -Wextra -g -c -std=c++98
-SRCS	=	main.cpp Karen.cpp
+SRCS	=	main.cpp Harl.cpp
 OBJ		=	$(SRCS:.c=.o)
 
 # Rules
