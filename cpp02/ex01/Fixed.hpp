@@ -7,22 +7,22 @@
 
 class Fixed
 {
-private:
-	int _value;
-	static const int _bits = 8;
-public:
-	Fixed();
-	Fixed(const int value);
-	Fixed(const float value);
-	Fixed(const Fixed& fixedCopyRef);
-	~Fixed();
-	Fixed &operator=(const Fixed& fixedCopyRef);
-	void setRawBits( int const raw );
-	int getRawBits( void ) const;
-	float toFloat(void) const;
-	int toInt(void) const;
+	public :
+		Fixed();
+		Fixed( Fixed const & src );
+		Fixed(const float nb);
+		Fixed(const int nb);
+		Fixed&	operator=( Fixed const & rhs);
+		int		getRawBits( void ) const;
+		void	setRawBits( int const raw );
+		float	toFloat( void ) const;
+		int		toInt( void ) const;
+		~Fixed();
+	private :
+		int					_fixed_point;
+		static const int	_fract_bit_nb = 8;
 };
 
-std::ostream &operator<<(std::ostream& flow, Fixed const &fixedCopyRef);
+std::ostream & operator<<( std::ostream & o, Fixed const & rhs );
 
-#endif // FIXED_HPP
+#endif

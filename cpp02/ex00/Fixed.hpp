@@ -6,16 +6,16 @@
 
 class Fixed
 {
-private:
-	int _value;
-	static const int _bits = 8;
-public:
-	Fixed();
-	Fixed(const Fixed& fixedCopyRef);
-	~Fixed();
-	Fixed &operator=(const Fixed& fixedCopyRef);
-	void setRawBits( int const raw );
-	int getRawBits( void ) const;
+	public :
+		Fixed();
+		Fixed( Fixed const & src );
+		Fixed&	operator=( Fixed const & rhs);
+		int		getRawBits( void ) const;
+		void	setRawBits( int const raw );
+		~Fixed();
+	private :
+		int					_fixedPoint;
+		static const int	_fractBitNb = 8;
 };
 
-#endif // FIXED_HPP
+#endif

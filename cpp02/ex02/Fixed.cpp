@@ -2,172 +2,180 @@
 
 // 1 << _bits (8) = 256
 
-Fixed::Fixed()
+Fixed::Fixed() : _fixedPoint(0)
 {
-	setRawBits(0);
-}
-
-Fixed::Fixed(const int	value)
-{
-	setRawBits(roundf(value * (1 << this->_bits)));
-}
-
-Fixed::Fixed(const float	value)
-{
-	setRawBits(roundf(value * (1 << this->_bits)));
-}
-
-Fixed::Fixed(const Fixed& fixedCopyRef)
-{
-	operator=(fixedCopyRef);
 }
 
 Fixed::~Fixed()
 {
 }
 
-Fixed& Fixed::operator=(const Fixed& fixedCopyRef)
+Fixed::Fixed(const int nb) : _fixedPoint(nb * 256)
 {
-	setRawBits(fixedCopyRef.getRawBits());
+}
+
+Fixed::Fixed(const float nb) : _fixedPoint((int)roundf(nb * 256))
+{
+}
+
+float			Fixed::toFloat( void ) const
+{
+	float		fixed_point;
+
+	fixed_point = (float)this->_fixedPoint;
+	return (fixed_point / 256);
+}
+
+int				Fixed::toInt( void ) const
+{
+	return (this->_fixedPoint / 256);
+}
+
+Fixed::Fixed( Fixed const & src )
+{
+	*this = src;
+	return ;
+}
+
+Fixed&			Fixed::operator=( Fixed const & rhs )
+{
+	this->_fixedPoint = rhs._fixedPoint;
+	return *this;
+}
+
+Fixed			Fixed::operator+( Fixed const & rhs )
+{
+	return Fixed(this->toFloat() + rhs.toFloat());
+}
+
+Fixed			Fixed::operator-( Fixed const & rhs )
+{
+	return Fixed(this->toFloat() - rhs.toFloat());
+}
+
+Fixed			Fixed::operator*( Fixed const & rhs )
+{
+	return Fixed(this->toFloat() * rhs.toFloat());
+}
+
+Fixed			Fixed::operator/( Fixed const & rhs )
+{
+	return Fixed(this->toFloat() / rhs.toFloat());
+}
+
+Fixed			Fixed::operator++( void )
+{
+	this->_fixedPoint ++;
 	return (*this);
 }
 
-std::ostream &operator<<(std::ostream& flow, Fixed const &fixedCopyRef)
+Fixed			Fixed::operator++( int )
 {
-	int	value;
+	Fixed		tmp;
 
-	value = fixedCopyRef.getRawBits();
-	std::cout << roundf(value) / 256;
-	return(flow);
+	tmp = *this;
+	++(*this);
+	return (tmp);
 }
 
-void Fixed::setRawBits( int const raw )
+Fixed			Fixed::operator--( void )
 {
-	this->_value = raw;
+	this->_fixedPoint--;
+	return (*this);
 }
 
-int Fixed::getRawBits( void ) const
+Fixed			Fixed::operator--( int )
 {
-	return (this->_value);
+	Fixed		tmp;
+
+	tmp = *this;
+	--(*this);
+	return (tmp);
 }
 
-float Fixed::toFloat(void) const
+std::ostream &	operator<<(std::ostream & o, Fixed const & rhs)
 {
+	o << rhs.toFloat();
+	return o;
+}
+
+int				Fixed::operator==(Fixed const & rhs ) const
+{
+	if (this->_fixedPoint == rhs._fixedPoint)
+		return (1);
 	return (0);
 }
 
-int Fixed::toInt(void) const
+int				Fixed::operator!=(Fixed const & rhs ) const
 {
-	return (roundf(this->_value / 256));
+	if (*this == rhs)
+		return (0);
+	return (1);
 }
 
-bool Fixed::operator>(const Fixed &fixedCopyRef)
+
+int				Fixed::operator>(Fixed const & rhs ) const
 {
-	if (this->_value > fixedCopyRef._value)
-		return (true);
-	return (false);
+	if (this->_fixedPoint > rhs._fixedPoint)
+		return (1);
+	return (0);
 }
 
-bool Fixed::operator<(const Fixed& fixedCopyRef)
+int				Fixed::operator<(Fixed const & rhs ) const
 {
-	if (this->_value < fixedCopyRef._value)
-		return (true);
-	return (false);
+	if (*this > rhs || *this == rhs)
+		return (0);
+	return (1);
 }
 
-bool Fixed::operator>=(const Fixed& fixedCopyRef)
+int				Fixed::operator>=(Fixed const & rhs ) const
 {
-	if (this->_value >= fixedCopyRef._value)
-		return (true);
-	return (false);
+	if (*this < rhs)
+		return (0);
+	return (1);
 }
 
-bool Fixed::operator<=(const Fixed & fixedCopyRef)
+int				Fixed::operator<=(Fixed const & rhs ) const
 {
-	if (this->_value <= fixedCopyRef._value)
-		return (true);
-	return (false);
+	if (*this > rhs)
+		return (0);
+	return (1);
 }
 
-bool Fixed::operator==(const Fixed & fixedCopyRef)
+
+int				Fixed::getRawBits( void ) const
 {
-	if (this->_value == fixedCopyRef._value)
-		return (true);
-	return (false);
+	return (this->_fixedPoint);
 }
 
-bool Fixed::operator!=(const Fixed & fixedCopyRef)
+void			Fixed::setRawBits( int const raw )
 {
-	if (this->_value < fixedCopyRef._value)
-		return (true);
-	return (false);
+	this->_fixedPoint = raw;
 }
 
-Fixed& Fixed::operator++()
+Fixed&			Fixed::min(Fixed& fp1, Fixed& fp2)
 {
-	this->_value++;
-	return (*this);
+	if (fp1 <= fp2)
+		return (fp1);
+	return (fp2);
+}
+Fixed const &	Fixed::min(const Fixed& fp1, const Fixed& fp2)
+{
+	if (fp1 <= fp2)
+		return (fp1);
+	return (fp2);
 }
 
-Fixed Fixed::operator++(int)
+Fixed &			Fixed::max(Fixed& fp1, Fixed& fp2)
 {
-	const Fixed temp(*this);
-	++(*this);
-	return (temp);
+	if (fp1 >= fp2)
+		return (fp1);
+	return (fp2);
 }
 
-Fixed& Fixed::operator*(const Fixed &left)
+const Fixed &	Fixed::max(const Fixed &fp1, const Fixed &fp2)
 {
-	float value = (roundf(this->_value) / 256 * roundf(left._value) / 256);
-	setRawBits(roundf(value * (1 << this->_bits)));
-	return (*this);
-}
-
-Fixed& Fixed::operator/(const Fixed &left)
-{
-	float value = ((roundf(this->_value) / 256) / (roundf(left._value) / 256));
-	setRawBits(roundf(value * (1 << this->_bits)));
-	return (*this);
-}
-
-Fixed& Fixed::operator+(const Fixed &left)
-{
-	float value = ((roundf(this->_value) / 256) + (roundf(left._value) / 256));
-	setRawBits(roundf(value * (1 << this->_bits)));
-	return (*this);
-}
-
-Fixed& Fixed::operator-(const Fixed &left)
-{
-	float value = ((roundf(this->_value) / 256) - (roundf(left._value) / 256));
-	setRawBits(roundf(value * (1 << this->_bits)));
-	return (*this);
-}
-
-Fixed& Fixed::min(Fixed& fixedLeft, Fixed& fixedRight)
-{
-	if (fixedLeft._value < fixedRight._value)
-		return (fixedLeft);
-	return (fixedRight);
-}
-
-const Fixed& Fixed::min(const Fixed& fixedLeft, const Fixed& fixedRight)
-{
-	if (fixedLeft._value < fixedRight._value)
-		return (fixedLeft);
-	return (fixedRight);
-}
-
-Fixed& Fixed::max(Fixed& fixedLeft, Fixed& fixedRight)
-{
-	if (fixedLeft._value > fixedRight._value)
-		return (fixedLeft);
-	return (fixedRight);
-}
-
-const Fixed& Fixed::max(const Fixed& fixedLeft, const Fixed& fixedRight)
-{
-	if (fixedLeft._value > fixedRight._value)
-		return (fixedLeft);
-	return (fixedRight);
+	if (fp1 >= fp2)
+		return (fp1);
+	return (fp2);
 }

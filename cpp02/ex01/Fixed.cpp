@@ -1,29 +1,8 @@
 #include "Fixed.hpp"
 
-// 1 << _bits (8) = 256
-
-Fixed::Fixed()
+Fixed::Fixed() : _fixed_point(0)
 {
 	std::cout << "Default constructor called" << std::endl;
-	setRawBits(0);
-}
-
-Fixed::Fixed(const int	value)
-{
-	std::cout << "Int constructor called" << std::endl;
-	setRawBits(roundf(value * (1 << this->_bits)));
-}
-
-Fixed::Fixed(const float	value)
-{
-	std::cout << "Float constructor called" << std::endl;
-	setRawBits(roundf(value * (1 << this->_bits)));
-}
-
-Fixed::Fixed(const Fixed& fixedCopyRef)
-{
-	std::cout << "Copy constructor called" << std::endl;
-	operator=(fixedCopyRef);
 }
 
 Fixed::~Fixed()
@@ -31,39 +10,56 @@ Fixed::~Fixed()
 	std::cout << "Destructor called" << std::endl;
 }
 
-Fixed& Fixed::operator=(const Fixed& fixedCopyRef)
+Fixed::Fixed(const int nb) : _fixed_point(nb * 256)
 {
-	std::cout << "Assignation operator called" << std::endl;
-	setRawBits(fixedCopyRef.getRawBits());
-	return (*this);
+	std::cout << "Int constructor called" << std::endl;
 }
 
-std::ostream &operator<<(std::ostream& flow, Fixed const &fixedCopyRef) //pas bon
+Fixed::Fixed(const float nb) : _fixed_point((int)roundf(nb * 256))
 {
-	int	value;
-
-	value = fixedCopyRef.getRawBits();
-	std::cout << roundf(value) / 256;
-	return(flow);
+	std::cout << "Float constructor called" << std::endl;
 }
 
-void Fixed::setRawBits( int const raw )
+float	Fixed::toFloat( void ) const
 {
-	this->_value = raw;
+	float		fixed_point;
+
+	fixed_point = (float)this->_fixed_point;
+	return (fixed_point / 256);
 }
 
-int Fixed::getRawBits( void ) const
+int		Fixed::toInt( void ) const
 {
-	return (this->_value);
+	return (this->_fixed_point / 256);
 }
 
-float Fixed::toFloat(void) const
+Fixed::Fixed( Fixed const & src )
 {
-	return (0);
+	std::cout << "Copy constructor called" << std::endl;
+	*this = src;
+	return ;
 }
 
-int Fixed::toInt(void) const
+Fixed&		Fixed::operator=( Fixed const & rhs )
 {
-	// std::cout << roundf(this->_value / 256);
-	return (roundf(this->_value / 256));
+	std::cout << "Copy assignment operator called" << std::endl;
+	this->_fixed_point = rhs._fixed_point;
+	return *this;
+}
+
+std::ostream & operator<<(std::ostream & o, Fixed const & rhs)
+{
+	o << rhs.toFloat();
+	return o;
+}
+
+int		Fixed::getRawBits( void ) const
+{
+	std::cout << "getRawbits member function called" << std::endl;
+	return (this->_fixed_point);
+}
+
+void	Fixed::setRawBits( int const raw )
+{
+	this->_fixed_point = raw;
 }

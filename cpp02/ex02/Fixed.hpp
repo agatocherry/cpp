@@ -3,42 +3,45 @@
 
 #include <string>
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 class Fixed
 {
-private:
-	int _value;
-	static const int _bits = 8;
-public:
-	Fixed();
-	Fixed(const int value);
-	Fixed(const float value);
-	Fixed(const Fixed& fixedCopyRef);
-	~Fixed();
-	Fixed &operator=(const Fixed& fixedCopyRef);
-	bool operator>(const Fixed& fixedCopyRef);
-	bool operator<(const Fixed& fixedCopyRef);
-	bool operator>=(const Fixed& fixedCopyRef);
-	bool operator<=(const Fixed& fixedCopyRef);
-	bool operator==(const Fixed& fixedCopyRef);
-	bool operator!=(const Fixed& fixedCopyRef);
-	Fixed &operator++();
-	Fixed operator++(int);
-	Fixed &operator*(const Fixed &left);
-	Fixed &operator/(const Fixed &left);
-	Fixed &operator+(const Fixed &left);
-	Fixed &operator-(const Fixed &left);
-	void setRawBits( int const raw );
-	int getRawBits( void ) const;
-	float toFloat(void) const;
-	int toInt(void) const;
-	static const Fixed &min(const Fixed& fixedLeft, const Fixed& fixedRight);
-	Fixed &min(Fixed& fixedLeft, Fixed& fixedRight);
-	static const Fixed &max(const Fixed& fixedLeft, const Fixed& fixedRight);
-	Fixed &max(Fixed& fixedLeft, Fixed& fixedRight);
+	public :
+		Fixed();
+		Fixed( Fixed const & src );
+		Fixed(const float nb);
+		Fixed(const int nb);
+		Fixed&	operator=( Fixed const & rhs );
+		Fixed	operator+( Fixed const & rhs );
+		Fixed	operator-( Fixed const & rhs );
+		Fixed	operator*( Fixed const & rhs );
+		Fixed	operator/( Fixed const & rhs );
+		Fixed	operator++( void );
+		Fixed	operator++( int );
+		Fixed	operator--( void );
+		Fixed	operator--( int );
+		int		operator>( Fixed const & rhs ) const;
+		int		operator<( Fixed const & rhs ) const;
+		int		operator>=( Fixed const & rhs ) const;
+		int		operator<=( Fixed const & rhs ) const;
+		int		operator==( Fixed const & rhs ) const;
+		int		operator!=( Fixed const & rhs ) const;
+		int		getRawBits( void ) const;
+		void	setRawBits( int const raw );
+		float	toFloat( void ) const;
+		int		toInt( void ) const;
+		static Fixed &		min(Fixed &fp1, Fixed &fp2);
+		static const Fixed &	min(const Fixed &fp1, const Fixed &fp2);
+		static Fixed &	max(Fixed &fp1, Fixed &fp2);
+		static const Fixed &	max(const Fixed &fp1, const Fixed &fp2);
+		~Fixed();
+
+	private :
+		int		_fixedPoint;
+		static const int	_fractbitNb = 8;
 };
 
-std::ostream &operator<<(std::ostream& flow, Fixed const &fixedCopyRef);
+std::ostream &	operator<<( std::ostream & o, Fixed const & rhs );
 
-#endif // FIXED_HPP
+#endif

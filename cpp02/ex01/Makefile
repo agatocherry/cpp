@@ -1,8 +1,8 @@
 # Variables
 
-NAME	=	a.out
+NAME	=	Fixed
 CC		=	c++
-CFLAGS	=	-Werror -Wall -Wextra -g -c
+CFLAGS	=	-Werror -Wall -Wextra -g -c -std=c++98
 SRCS	=	main.cpp Fixed.cpp
 OBJ		=	$(SRCS:.c=.o)
 
